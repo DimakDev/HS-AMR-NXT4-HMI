@@ -48,12 +48,20 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         myPeripheral = toPeripheral
     }
     
+    func disconnect() {
+        if let p = myPeripheral {
+            centralManager.cancelPeripheralConnection(p)
+        } else if let p = myPeripheral {
+            centralManager.cancelPeripheralConnection(p) //TODO: Test whether its neccesary to set p to nil
+        }
+    }
+    
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         central.scanForPeripherals(withServices: [CBUUID.init(string: "FFE0")], options: nil)
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        central.scanForPeripherals(withServices: [CBUUID.init(string: "FFE0")], options: nil)
+        print ("disconnected \(peripheral.name!)")
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
@@ -127,17 +135,35 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     
     
     //Interactive section for communication between UI and Arduino UNO
-    @IBAction func Power(_ sender: Any) {
-        writeValue(command: "on")
+    @IBAction func Disconnect(_ sender: UISwitch) {
+        if sender.isOn {
+            let alert = UIAlertController(title: "Connect?", message: "Set bluetooth connection to NXT", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {action in
+                self.connect(toPeripheral: self.myPeripheral!)}))
+            alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: {action in
+                sender.setOn(false, animated: true)}))
+            self.present(alert, animated: true)
+        } else {
+            let alert = UIAlertController(title: "Disconnect?", message: "Lose bluetooth connection to NXT", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {action in
+                self.disconnect()}))
+            alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: {action in
+                sender.setOn(true, animated: true)}))
+            self.present(alert, animated: true)
+        }
+        
     }
     
-    @IBAction func Park(_ sender: Any) {
+    @IBAction func Parking(_ sender: UIButton) {
+        UIButton.animate(withDuration: 0.25, animations: {sender.transform = CGAffineTransform(scaleX: 1.06, y: 1.04)}, completion: {finish in UIButton.animate(withDuration: 0.25, animations: {sender.transform = CGAffineTransform.identity})
+        })
         writeValue(command: "park")
     }
-    @IBAction func Run(_ sender: Any) {
+    
+    @IBAction func Run(_ sender: UIButton) {
+        UIButton.animate(withDuration: 0.25, animations: {sender.transform = CGAffineTransform(scaleX: 1.06, y: 1.04)}, completion: {finish in UIButton.animate(withDuration: 0.25, animations: {sender.transform = CGAffineTransform.identity})
+        })
         writeValue(command: "scout")
     }
-    
-    
     
 }
