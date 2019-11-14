@@ -28,7 +28,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="66" height="70"/>
                                         <state key="normal" image="ic_local_parking_24px"/>
                                         <connections>
-                                            <action selector="Parking:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dMY-Bj-HC1"/>
+                                            <action selector="Parking:" destination="BYZ-38-t0r" eventType="touchUpInside" id="MvF-CP-gdZ"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r9C-1M-KRi">
@@ -40,7 +40,7 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cTb-5Y-Eoh">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="cTb-5Y-Eoh">
                                 <rect key="frame" x="20" y="20" width="49" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="31" id="W5p-ha-m24"/>
@@ -63,6 +63,11 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="Disconnect" destination="cTb-5Y-Eoh" id="1ft-XO-Pny"/>
+                        <outlet property="Parking" destination="94g-OD-jXn" id="XmW-V6-Oev"/>
+                        <outlet property="Run" destination="r9C-1M-KRi" id="6b2-wG-95Y"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

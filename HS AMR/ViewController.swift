@@ -62,10 +62,12 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         print ("disconnected \(peripheral.name!)")
+        Disconnect.setOn(false, animated: true)
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         print ("connected \(peripheral.name!)")
+        Disconnect.setOn(true, animated: true)
         peripheral.discoverServices(nil)
         peripheral.delegate = self
         UserDefaults.standard.set(peripheral.identifier.uuidString, forKey: "PUUID")
@@ -135,11 +137,16 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     
     
     //Interactive section for communication between UI and Arduino UNO
+    @IBOutlet weak var Disconnect: UISwitch!
+    @IBOutlet weak var Parking: UIButton!
+    @IBOutlet weak var Run: UIButton!
+    
     @IBAction func Disconnect(_ sender: UISwitch) {
         if sender.isOn {
             let alert = UIAlertController(title: "Connect?", message: "Set bluetooth connection to NXT", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {action in
-                self.connect(toPeripheral: self.myPeripheral!)}))
+                self.connect(toPeripheral: self.myPeripheral!)
+                sender.setOn(false, animated: true)}))
             alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: {action in
                 sender.setOn(false, animated: true)}))
             self.present(alert, animated: true)
@@ -151,7 +158,6 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
                 sender.setOn(true, animated: true)}))
             self.present(alert, animated: true)
         }
-        
     }
     
     @IBAction func Parking(_ sender: UIButton) {
