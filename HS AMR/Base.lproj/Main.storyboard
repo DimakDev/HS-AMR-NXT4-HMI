@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="landscape">
+    <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -15,14 +15,14 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="HS_AMR" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Map" translatesAutoresizingMaskIntoConstraints="NO" id="qDL-Ga-sue">
-                                <rect key="frame" x="20" y="41" width="544" height="293"/>
+                                <rect key="frame" x="20" y="197" width="335" height="293"/>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="0XG-ac-Y1T">
-                                <rect key="frame" x="581" y="195" width="66" height="160"/>
+                                <rect key="frame" x="289" y="487" width="66" height="160"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="94g-OD-jXn">
                                         <rect key="frame" x="0.0" y="0.0" width="66" height="70"/>
@@ -41,7 +41,7 @@
                                 </subviews>
                             </stackView>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="cTb-5Y-Eoh">
-                                <rect key="frame" x="20" y="20" width="49" height="31"/>
+                                <rect key="frame" x="20" y="60" width="49" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="31" id="W5p-ha-m24"/>
                                     <constraint firstAttribute="width" constant="47" id="mL8-Kf-uCI"/>
@@ -50,16 +50,24 @@
                                     <action selector="Disconnect:" destination="BYZ-38-t0r" eventType="valueChanged" id="Tln-8i-96I"/>
                                 </connections>
                             </switch>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Soz-HC-5AZ">
-                                <rect key="frame" x="577" y="0.0" width="70" height="70"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TIp-gQ-KVa">
+                                <rect key="frame" x="285" y="40" width="70" height="70"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="70" id="dp3-iX-oWS"/>
-                                    <constraint firstAttribute="width" constant="70" id="uEK-Oz-4Cl"/>
+                                    <constraint firstAttribute="width" constant="70" id="G7h-La-j0T"/>
+                                    <constraint firstAttribute="height" constant="70" id="byB-7P-4rN"/>
                                 </constraints>
                                 <state key="normal" image="ic_more_vert_24px"/>
                                 <connections>
-                                    <segue destination="Bsa-ed-QDJ" kind="presentation" modalTransitionStyle="coverVertical" id="kkX-qq-dZU"/>
+                                    <segue destination="Bsa-ed-QDJ" kind="presentation" modalTransitionStyle="coverVertical" id="4JM-Dj-A7T"/>
                                 </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Z0b-qX-49h">
+                                <rect key="frame" x="-10" y="334" width="89" height="66"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="66" id="ZcE-Eo-mwS"/>
+                                    <constraint firstAttribute="width" constant="89" id="bls-MD-B0P"/>
+                                </constraints>
+                                <state key="normal" image="Mikky Robot"/>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -67,15 +75,19 @@
                             <constraint firstItem="cTb-5Y-Eoh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="7Vi-rX-Hbd"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="0XG-ac-Y1T" secondAttribute="bottom" constant="20" id="7ob-Pv-YEf"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="0XG-ac-Y1T" secondAttribute="trailing" constant="20" id="8aq-xE-xcx"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="TIp-gQ-KVa" secondAttribute="trailing" constant="20" id="Bgc-Nt-YI0"/>
                             <constraint firstItem="qDL-Ga-sue" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="Clu-BT-xAc"/>
-                            <constraint firstItem="Soz-HC-5AZ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="SrI-Db-7Wu">
-                                <variation key="heightClass=compact-widthClass=compact" constant="0.0"/>
+                            <constraint firstItem="Z0b-qX-49h" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="-2" id="Dwp-qA-aXh">
+                                <variation key="heightClass=regular-widthClass=compact" constant="-10"/>
                             </constraint>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Soz-HC-5AZ" secondAttribute="trailing" constant="20" id="TkH-17-dge"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Z0b-qX-49h" secondAttribute="bottom" constant="116" id="Mah-HE-Za4">
+                                <variation key="heightClass=regular-widthClass=compact" constant="267"/>
+                            </constraint>
                             <constraint firstItem="qDL-Ga-sue" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="ZuO-zt-82P"/>
                             <constraint firstItem="cTb-5Y-Eoh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="iKp-dV-Lj4">
                                 <variation key="heightClass=regular-widthClass=compact" constant="40"/>
                             </constraint>
+                            <constraint firstItem="TIp-gQ-KVa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="m1q-EB-RvN"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qDL-Ga-sue" secondAttribute="trailing" constant="20" id="tgw-A7-A3O"/>
                             <constraint firstItem="cTb-5Y-Eoh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="tlf-Tn-fZu">
                                 <variation key="heightClass=regular-widthClass=compact" constant="40"/>
@@ -97,37 +109,37 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="967.20000000000005" y="48.125937031484263"/>
+            <point key="canvasLocation" x="964" y="45.42728635682159"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="4fG-Fq-0ta">
             <objects>
                 <viewController modalPresentationStyle="overCurrentContext" id="Bsa-ed-QDJ" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="OE0-Wy-bOZ">
-                        <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gxd-G6-x9F">
-                                <rect key="frame" x="577" y="0.0" width="70" height="70"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dbQ-6C-9w0">
+                                <rect key="frame" x="285" y="40" width="70" height="70"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="70" id="BPO-Tx-27A"/>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="70" id="SnO-YE-sEk"/>
-                                    <constraint firstAttribute="height" constant="70" id="b0i-BS-XRO"/>
-                                    <constraint firstAttribute="width" constant="70" id="mkv-30-jBN"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="70" id="8ir-xH-XWm"/>
+                                    <constraint firstAttribute="width" constant="70" id="O5K-s8-fkq"/>
+                                    <constraint firstAttribute="height" constant="70" id="W8V-CE-wY8"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="70" id="nQm-Mw-aj5"/>
                                 </constraints>
                                 <state key="normal" image="ic_close_24px"/>
                                 <connections>
-                                    <action selector="closeDetails:" destination="zOD-fl-2cv" eventType="touchUpInside" id="Ph3-Ov-19e"/>
-                                    <segue destination="BYZ-38-t0r" kind="presentation" modalTransitionStyle="crossDissolve" id="iwX-P9-Agj"/>
+                                    <action selector="Details:" destination="zOD-fl-2cv" eventType="touchUpInside" id="Mm6-EU-niZ"/>
+                                    <action selector="asdf:" destination="zOD-fl-2cv" eventType="touchUpInside" id="cSg-Vr-s8D"/>
+                                    <action selector="s:" destination="zOD-fl-2cv" eventType="touchUpInside" id="9EX-Rf-LJS"/>
+                                    <segue destination="zOD-fl-2cv" kind="unwind" unwindAction="unwindToGlobalWithSegue:" id="0NZ-cq-Wei"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="0.69855853873239437" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="gxd-G6-x9F" firstAttribute="top" secondItem="Svt-H0-yAN" secondAttribute="top" constant="20" id="KGr-A0-ltT">
-                                <variation key="heightClass=compact-widthClass=compact" constant="0.0"/>
-                            </constraint>
-                            <constraint firstItem="Svt-H0-yAN" firstAttribute="trailing" secondItem="gxd-G6-x9F" secondAttribute="trailing" constant="20" id="QMz-2S-hbu"/>
+                            <constraint firstItem="Svt-H0-yAN" firstAttribute="trailing" secondItem="dbQ-6C-9w0" secondAttribute="trailing" constant="20" id="2qc-6q-FNx"/>
+                            <constraint firstItem="dbQ-6C-9w0" firstAttribute="top" secondItem="Svt-H0-yAN" secondAttribute="top" constant="20" id="sNP-Xu-jFn"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Svt-H0-yAN"/>
                     </view>
@@ -135,11 +147,12 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NTx-EI-ujn" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="zOD-fl-2cv" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2269.5999999999999" y="47.226386806596707"/>
+            <point key="canvasLocation" x="1825" y="48"/>
         </scene>
     </scenes>
     <resources>
         <image name="Map" width="544" height="293"/>
+        <image name="Mikky Robot" width="66" height="53"/>
         <image name="ic_close_24px" width="35" height="35"/>
         <image name="ic_local_parking_24px" width="51" height="70"/>
         <image name="ic_more_vert_24px" width="9" height="35"/>

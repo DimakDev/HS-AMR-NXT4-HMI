@@ -100,18 +100,17 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if let val = characteristic.value {
             if characteristic.uuid == charBT05 {
-                print ("keys: \([UInt8](val))")
+                print ("modeID: \([UInt8](val))")
             }
         }
     }
     
-    func writeValue(command: String) {
-        let dataToSend: Data = command.data(using: String.Encoding.utf8)!
+    func writeValue(data: Data) {
         if myCharasteristic!.properties.contains(CBCharacteristicProperties.writeWithoutResponse) {
-            myPeripheral!.writeValue(dataToSend, for: myCharasteristic!, type: CBCharacteristicWriteType.withoutResponse)
+            myPeripheral!.writeValue(data, for: myCharasteristic!, type: CBCharacteristicWriteType.withoutResponse)
         }
         else {
-            myPeripheral!.writeValue(dataToSend, for: myCharasteristic!, type: CBCharacteristicWriteType.withResponse)
+            myPeripheral!.writeValue(data, for: myCharasteristic!, type: CBCharacteristicWriteType.withResponse)
         }
     }
     
@@ -134,7 +133,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     var myPeripheral : CBPeripheral?
     var myCharasteristic : CBCharacteristic?
     
-    
+    var toggled = false
     
     //Interactive section for communication between UI and Arduino UNO
     @IBOutlet weak var Disconnect: UISwitch!
@@ -160,16 +159,23 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         }
     }
     
+    // modeID [02] for Parking_THIS
     @IBAction func Parking(_ sender: UIButton) {
-        UIButton.animate(withDuration: 0.25, animations: {sender.transform = CGAffineTransform(scaleX: 1.06, y: 1.04)}, completion: {finish in UIButton.animate(withDuration: 0.25, animations: {sender.transform = CGAffineTransform.identity})
-        })
-        writeValue(command: "park")
+        UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform(scaleX: 1.1, y: 1.15)}, completion: {finish in UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform.identity})})
+        writeValue(data: Data.init(bytes: [1]))
     }
     
     @IBAction func Run(_ sender: UIButton) {
-        UIButton.animate(withDuration: 0.25, animations: {sender.transform = CGAffineTransform(scaleX: 1.06, y: 1.04)}, completion: {finish in UIButton.animate(withDuration: 0.25, animations: {sender.transform = CGAffineTransform.identity})
-        })
-        writeValue(command: "scout")
+        if toggled == false {
+            writeValue(data: Data.init(bytes: [0]))
+            toggled = true
+        } else {
+            writeValue(data: Data.init(bytes: [3]))
+            toggled = false
+        }
+        UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform(scaleX: 1.1, y: 1.15)}, completion: {finish in UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform.identity})})
     }
     
+    @IBAction func unwindToGlobal(segue: UIStoryboardSegue) {
+    }
 }
