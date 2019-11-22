@@ -18,9 +18,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Map" translatesAutoresizingMaskIntoConstraints="NO" id="qDL-Ga-sue">
-                                <rect key="frame" x="20" y="197" width="335" height="293"/>
-                            </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="0XG-ac-Y1T">
                                 <rect key="frame" x="289" y="487" width="66" height="160"/>
                                 <subviews>
@@ -61,34 +58,49 @@
                                     <segue destination="Bsa-ed-QDJ" kind="presentation" modalTransitionStyle="coverVertical" id="4JM-Dj-A7T"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Z0b-qX-49h">
-                                <rect key="frame" x="-10" y="334" width="89" height="66"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="MapV" translatesAutoresizingMaskIntoConstraints="NO" id="sIx-MO-aae">
+                                <rect key="frame" x="15" y="74" width="295" height="549"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="66" id="ZcE-Eo-mwS"/>
-                                    <constraint firstAttribute="width" constant="89" id="bls-MD-B0P"/>
+                                    <constraint firstAttribute="width" constant="295" id="FaP-Ee-RDk">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="549"/>
+                                    </constraint>
+                                    <constraint firstAttribute="height" constant="549" id="U1g-Sz-j2m">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="295"/>
+                                    </constraint>
                                 </constraints>
-                                <state key="normal" image="Mikky Robot"/>
-                            </button>
+                                <variation key="heightClass=compact-widthClass=compact" image="MapH"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RobotH" translatesAutoresizingMaskIntoConstraints="NO" id="hjO-Y0-qGA">
+                                <rect key="frame" x="96" y="66" width="60" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="60" id="53X-o8-KgV"/>
+                                    <constraint firstAttribute="height" constant="60" id="dby-Rt-rMa"/>
+                                </constraints>
+                                <variation key="heightClass=regular-widthClass=compact" image="RobotV"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="hjO-Y0-qGA" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="12" id="39f-rf-CcI">
+                                <variation key="heightClass=regular-widthClass=compact" constant="96"/>
+                            </constraint>
                             <constraint firstItem="cTb-5Y-Eoh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="7Vi-rX-Hbd"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="0XG-ac-Y1T" secondAttribute="bottom" constant="20" id="7ob-Pv-YEf"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="0XG-ac-Y1T" secondAttribute="trailing" constant="20" id="8aq-xE-xcx"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="sIx-MO-aae" secondAttribute="bottom" constant="44" id="BCM-Bo-tVZ">
+                                <variation key="heightClass=compact-widthClass=compact" constant="25"/>
+                            </constraint>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="TIp-gQ-KVa" secondAttribute="trailing" constant="20" id="Bgc-Nt-YI0"/>
-                            <constraint firstItem="qDL-Ga-sue" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="Clu-BT-xAc"/>
-                            <constraint firstItem="Z0b-qX-49h" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="-2" id="Dwp-qA-aXh">
-                                <variation key="heightClass=regular-widthClass=compact" constant="-10"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="hjO-Y0-qGA" secondAttribute="bottom" constant="103" id="cDZ-D0-RHy">
+                                <variation key="heightClass=regular-widthClass=compact" constant="541"/>
                             </constraint>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Z0b-qX-49h" secondAttribute="bottom" constant="116" id="Mah-HE-Za4">
-                                <variation key="heightClass=regular-widthClass=compact" constant="267"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="sIx-MO-aae" secondAttribute="trailing" constant="65" id="fEi-xy-qLW">
+                                <variation key="heightClass=compact-widthClass=compact" constant="98"/>
                             </constraint>
-                            <constraint firstItem="qDL-Ga-sue" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="ZuO-zt-82P"/>
-                            <constraint firstItem="cTb-5Y-Eoh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="iKp-dV-Lj4">
+                            <constraint firstItem="cTb-5Y-Eoh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="30" id="iKp-dV-Lj4">
                                 <variation key="heightClass=regular-widthClass=compact" constant="40"/>
                             </constraint>
                             <constraint firstItem="TIp-gQ-KVa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="m1q-EB-RvN"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qDL-Ga-sue" secondAttribute="trailing" constant="20" id="tgw-A7-A3O"/>
                             <constraint firstItem="cTb-5Y-Eoh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="tlf-Tn-fZu">
                                 <variation key="heightClass=regular-widthClass=compact" constant="40"/>
                             </constraint>
@@ -109,7 +121,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="964" y="45.42728635682159"/>
+            <point key="canvasLocation" x="957.60000000000002" y="39.130434782608695"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="4fG-Fq-0ta">
@@ -151,8 +163,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Map" width="544" height="293"/>
-        <image name="Mikky Robot" width="66" height="53"/>
+        <image name="MapH" width="544" height="293"/>
+        <image name="MapV" width="293" height="544"/>
+        <image name="RobotH" width="66" height="53"/>
+        <image name="RobotV" width="53" height="66"/>
         <image name="ic_close_24px" width="35" height="35"/>
         <image name="ic_local_parking_24px" width="51" height="70"/>
         <image name="ic_more_vert_24px" width="9" height="35"/>

@@ -129,16 +129,26 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         // Dispose of any resources that can be recreated.
     }
     
+    
     var centralManager : CBCentralManager!
     var myPeripheral : CBPeripheral?
     var myCharasteristic : CBCharacteristic?
     
-    var toggled = false
     
     //Interactive section for communication between UI and Arduino UNO
     @IBOutlet weak var Disconnect: UISwitch!
     @IBOutlet weak var Parking: UIButton!
     @IBOutlet weak var Run: UIButton!
+    
+    var toggled = false
+    
+    let modeParking:[UInt8] = [0x00, 0x01]
+    let modeScout:[UInt8] = [0x00, 0x00]
+    let modePause:[UInt8] = [0x00, 0x03]
+
+    lazy var writeModeParking =  Data(bytes: modeParking)
+    lazy var writeModeScout =  Data(bytes: modeScout)
+    lazy var writeModePause = Data(bytes: modePause)
     
     @IBAction func Disconnect(_ sender: UISwitch) {
         if sender.isOn {
@@ -162,16 +172,22 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     // modeID [02] for Parking_THIS
     @IBAction func Parking(_ sender: UIButton) {
         UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform(scaleX: 1.1, y: 1.15)}, completion: {finish in UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform.identity})})
-        writeValue(data: Data.init(bytes: [1]))
+        if myCharasteristic != nil {
+        writeValue(data: writeModeParking)
+        }
     }
     
     @IBAction func Run(_ sender: UIButton) {
         if toggled == false {
-            writeValue(data: Data.init(bytes: [0]))
+            if myCharasteristic != nil {
+            writeValue(data: writeModeScout)
             toggled = true
+            }
         } else {
-            writeValue(data: Data.init(bytes: [3]))
+            if myCharasteristic != nil {
+            writeValue(data: writeModePause)
             toggled = false
+            }
         }
         UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform(scaleX: 1.1, y: 1.15)}, completion: {finish in UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform.identity})})
     }
