@@ -8,7 +8,8 @@
 
 import UIKit
 import CoreBluetooth
-
+import RxSwift
+import RxCocoa
 
 let svcBT05 = CBUUID.init(string: "FFE0")
 let charBT05 = CBUUID.init(string: "FFE1")
@@ -128,7 +129,20 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         // Do any additional setup after loading the view, typically from a nib.
         centralManager = CBCentralManager.init(delegate: self, queue: nil)
         
-        createMap()
+        createObjects()
+        
+        DetailsController.slotIndex.asObservable()
+            .subscribe(onNext: { value in
+                self.makeButton()
+            })
+            .disposed(by: bag)
+        
+        DetailsController.distance.asObservable()
+            .subscribe(onNext: { value in
+                self.pathAnimation()
+                self.robotAnimation()
+            })
+            .disposed(by: bag)
     }
     
     override func didReceiveMemoryWarning() {
@@ -136,6 +150,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         // Dispose of any resources that can be recreated.
     }
     
+    let bag = DisposeBag()
     
     var centralManager : CBCentralManager!
     var myPeripheral : CBPeripheral?
@@ -148,6 +163,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     @IBOutlet weak var Parking: UIButton!
     @IBOutlet weak var Run: UIButton!
     
+    var slotButton: UIButton!
+    var robotLayer = CALayer()
+
     var toggled = false
     
     var openInputStream: [UInt8] = [0x09, 0x00]
@@ -209,7 +227,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     @IBAction func detailsButton(_ sender: Any) {
         performSegue(withIdentifier: "detailsSegue", sender: self)
         if myCharasteristic != nil {
-            writeValue(data: writeOpenStream)
+            //writeValue(data: writeOpenStream)
         }
     }
     
@@ -222,11 +240,11 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
  
     @IBAction func unwindToGlobal(segue: UIStoryboardSegue) {
         if myCharasteristic != nil {
-            writeValue(data: writeCloseStream)
+            //writeValue(data: writeCloseStream)
         }
     }
     
-    func createMap() {
+    func createObjects() {
         //let screenSize: CGRect = UIScreen.main.bounds
         
         // get screen width.
@@ -282,5 +300,68 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         
         view.layer.addSublayer(roadLayer)
         view.layer.addSublayer(pathLayer)
+        
+        robotLayer.frame = CGRect(x: 124-32, y: 95-34, width: 70, height: 70)
+        robotLayer.contentsGravity = CALayerContentsGravity.resizeAspect
+        robotLayer.contents = UIImage(named: "Robot")?.cgImage
+        robotLayer.zPosition = 1
+        view.layer.addSublayer(robotLayer)
+    }
+    
+    func makeButton() {
+        slotButton = UIButton(type: .system)
+        slotButton.tag = DetailsController.slotIndex.value
+        // bad size and position of parking slot
+        //slotButton.bounds = CGRect(x: DetailsController.frontSlot.x, y: DetailsController.frontSlot.y, width: 30, height: 30)
+        slotButton.frame = CGRect(x: 25, y: 150, width: 60, height: 60)
+        slotButton.layer.cornerRadius = 10
+        slotButton.backgroundColor = UIColor.darkGray.withAlphaComponent(0.4)
+        // if the parking slot isnt suitable, than set the color to darkGray
+        slotButton.addTarget(self, action: #selector(parkThis), for: UIControlEvents.touchUpInside)
+        
+        self.view.addSubview(slotButton)
+    }
+    
+    func pathAnimation() {
+        let path = UIBezierPath()
+        path.move(to: DetailsController.from)
+        //path.addLine(to: DetailsController.to)
+        path.addLine(to: CGPoint(x: DetailsController.to.x, y: DetailsController.to.y + CGFloat(200)))
+
+        let pathLayer = CAShapeLayer()
+        pathLayer.path = path.cgPath
+        pathLayer.fillColor = UIColor.clear.cgColor
+        pathLayer.strokeColor = UIColor.black.cgColor
+        pathLayer.lineDashPattern = [2, 4]
+        pathLayer.lineWidth = 8.0
+        
+        view.layer.addSublayer(pathLayer)
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.fromValue = 0
+        animation.duration = 6
+        pathLayer.add(animation, forKey: "Driving Path Animation")
+    }
+    
+    func robotAnimation() {
+//        let imageLayer = CALayer()
+//        imageLayer.frame = CGRect(x: 124-32, y: 95-34, width: 70, height: 70)
+//        imageLayer.contentsGravity = CALayerContentsGravity.resizeAspect
+//        imageLayer.contents = UIImage(named: "Robot")?.cgImage
+//        view.layer.addSublayer(imageLayer)
+
+        let animation = CABasicAnimation(keyPath: "position")
+        animation.fromValue = CGPoint(x: DetailsController.from.x + CGFloat(3), y: DetailsController.from.y + CGFloat(1))
+        animation.toValue = CGPoint(x: DetailsController.to.x + CGFloat(3), y: DetailsController.to.y + CGFloat(1) + CGFloat(200))
+        animation.duration = 6
+        animation.fillMode = .forwards
+        animation.isRemovedOnCompletion = false
+        robotLayer.add(animation, forKey: "Robot Animation")
+    }
+    
+    @objc func parkThis(sender: UIButton) {
+        if myCharasteristic != nil {
+            writeValue(data: Data(bytes: [0x01, UInt8(sender.tag)]))
+        }
+        UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform(scaleX: 1.1, y: 1.15)}, completion: {finish in UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform.identity})})
     }
 }
