@@ -65,13 +65,13 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         print ("disconnected \(peripheral.name!)")
-        Disconnect.setOn(false, animated: true)
+        ble.setOn(false, animated: true)
         writeValue(data: writeModePause)
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         print ("connected \(peripheral.name!)")
-        Disconnect.setOn(true, animated: true)
+        ble.setOn(true, animated: true)
         peripheral.discoverServices(nil)
         peripheral.delegate = self
         UserDefaults.standard.set(peripheral.identifier.uuidString, forKey: "PUUID")
@@ -159,9 +159,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     var detailsController = DetailsController()    
     
     //UI interaction section
-    @IBOutlet weak var Disconnect: UISwitch!
-    @IBOutlet weak var Parking: UIButton!
-    @IBOutlet weak var Run: UIButton!
+    @IBOutlet weak var ble: UISwitch!
+    @IBOutlet weak var parking: UIButton!
+    @IBOutlet weak var run: UIButton!
     
     var slotButton: UIButton!
     var robotLayer = CALayer()
@@ -182,7 +182,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     lazy var writeModeScout =  Data(bytes: modeScout)
     lazy var writeModePause = Data(bytes: modePause)
     
-    @IBAction func Disconnect(_ sender: UISwitch) {
+    @IBAction func ble(_ sender: UISwitch) {
         if sender.isOn {
             let alert = UIAlertController(title: "Connect?", message: "Set bluetooth connection to NXT", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {action in
@@ -201,14 +201,14 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         }
     }
     
-    @IBAction func Parking(_ sender: UIButton) {
+    @IBAction func parking(_ sender: UIButton) {
         if myCharasteristic != nil {
         writeValue(data: writeModeParking)
         }
         UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform(scaleX: 1.1, y: 1.15)}, completion: {finish in UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform.identity})})
     }
     
-    @IBAction func Run(_ sender: UIButton) {
+    @IBAction func run(_ sender: UIButton) {
         if toggled == false {
             if myCharasteristic != nil {
             writeValue(data: writeModeScout)
@@ -302,6 +302,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         view.layer.addSublayer(pathLayer)
         
         robotLayer.frame = CGRect(x: 124-32, y: 95-34, width: 70, height: 70)
+        //robotLayer.backgroundColor = UIColor.black.cgColor
         robotLayer.contentsGravity = CALayerContentsGravity.resizeAspect
         robotLayer.contents = UIImage(named: "Robot")?.cgImage
         robotLayer.zPosition = 1
@@ -309,6 +310,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     }
     
     func makeButton() {
+        //if DetailsController.slotIndex.value != 0 {
         slotButton = UIButton(type: .system)
         slotButton.tag = DetailsController.slotIndex.value
         // bad size and position of parking slot
@@ -316,10 +318,21 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         slotButton.frame = CGRect(x: 25, y: 150, width: 60, height: 60)
         slotButton.layer.cornerRadius = 10
         slotButton.backgroundColor = UIColor.darkGray.withAlphaComponent(0.4)
+        if DetailsController.slotStatus == 0 {
+            slotButton.setTitle("P", for: .normal)
+            slotButton.setTitleColor(UIColor.black, for: .normal)
+            slotButton.titleLabel!.font = UIFont.boldSystemFont(ofSize: 30)
+            slotButton.addTarget(self, action: #selector(parkThis), for: UIControlEvents.touchUpInside)
+        } else {
+            slotButton.setTitle("X", for: .normal)
+            slotButton.setTitleColor(UIColor.black, for: .normal)
+            slotButton.titleLabel!.font = UIFont.boldSystemFont(ofSize: 30)
+            slotButton.addTarget(self, action: #selector(alert), for: UIControlEvents.touchUpInside)
+        }
         // if the parking slot isnt suitable, than set the color to darkGray
-        slotButton.addTarget(self, action: #selector(parkThis), for: UIControlEvents.touchUpInside)
         
         self.view.addSubview(slotButton)
+        //}
     }
     
     func pathAnimation() {
@@ -348,14 +361,39 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
 //        imageLayer.contentsGravity = CALayerContentsGravity.resizeAspect
 //        imageLayer.contents = UIImage(named: "Robot")?.cgImage
 //        view.layer.addSublayer(imageLayer)
+        //var animations = [CABasicAnimation]()
+        
+        let moveAnimation = CABasicAnimation(keyPath: "position")
+        moveAnimation.fromValue = CGPoint(x: DetailsController.from.x + CGFloat(3), y: DetailsController.from.y + CGFloat(1))
+        moveAnimation.toValue = CGPoint(x: DetailsController.to.x + CGFloat(3), y: DetailsController.to.y + CGFloat(1) + CGFloat(200))
+        moveAnimation.duration = 6
+        moveAnimation.fillMode = .forwards
+        moveAnimation.isRemovedOnCompletion = false
+        //robotLayer.add(moveAnimation, forKey: "Robot moveAnimation")
+        //animations.append(moveAnimation)
 
-        let animation = CABasicAnimation(keyPath: "position")
-        animation.fromValue = CGPoint(x: DetailsController.from.x + CGFloat(3), y: DetailsController.from.y + CGFloat(1))
-        animation.toValue = CGPoint(x: DetailsController.to.x + CGFloat(3), y: DetailsController.to.y + CGFloat(1) + CGFloat(200))
-        animation.duration = 6
-        animation.fillMode = .forwards
-        animation.isRemovedOnCompletion = false
-        robotLayer.add(animation, forKey: "Robot Animation")
+        let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
+        rotateAnimation.fromValue = 0.0
+        rotateAnimation.toValue = CGFloat(Double.pi * Double(DetailsController.heading))
+        //rotateAnimation.toValue = CGFloat(Double.pi * (-1))
+        rotateAnimation.duration = 2
+        rotateAnimation.beginTime = 6
+        //rotateAnimation.fillMode = .forwards
+        //rotateAnimation.isRemovedOnCompletion = false
+        //robotLayer.add(rotateAnimation, forKey: "Robot rotational animation")
+        //animations.append(rotateAnimation)
+        
+        let group = CAAnimationGroup()
+        group.animations = [moveAnimation, rotateAnimation]
+        group.duration = 8
+        //group.repeatCount = Float.greatestFiniteMagnitude
+        group.fillMode = .forwards
+        group.isRemovedOnCompletion = false
+        //group.animations = animations
+        
+        robotLayer.add(group, forKey: nil)
+        
+        
     }
     
     @objc func parkThis(sender: UIButton) {
@@ -363,5 +401,11 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
             writeValue(data: Data(bytes: [0x01, UInt8(sender.tag)]))
         }
         UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform(scaleX: 1.1, y: 1.15)}, completion: {finish in UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform.identity})})
+    }
+    
+    @objc func alert(sender: UIButton) {
+        let alert = UIAlertController(title: "", message: "This parking slot is to small", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 }

@@ -21,30 +21,30 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="0XG-ac-Y1T">
                                 <rect key="frame" x="289" y="487" width="66" height="160"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r9C-1M-KRi">
+                                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r9C-1M-KRi" userLabel="run">
                                         <rect key="frame" x="0.0" y="0.0" width="66" height="70"/>
                                         <state key="normal" image="play-pause-music-player"/>
                                         <connections>
-                                            <action selector="Run:" destination="BYZ-38-t0r" eventType="touchUpInside" id="tWu-jG-mBR"/>
+                                            <action selector="run:" destination="BYZ-38-t0r" eventType="touchUpInside" id="m3p-CK-2vo"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="94g-OD-jXn">
+                                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="94g-OD-jXn" userLabel="parking">
                                         <rect key="frame" x="0.0" y="90" width="66" height="70"/>
                                         <state key="normal" image="ic_local_parking_24px"/>
                                         <connections>
-                                            <action selector="Parking:" destination="BYZ-38-t0r" eventType="touchUpInside" id="MvF-CP-gdZ"/>
+                                            <action selector="parking:" destination="BYZ-38-t0r" eventType="touchUpInside" id="QeZ-KQ-zCq"/>
                                         </connections>
                                     </button>
                                 </subviews>
                             </stackView>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="cTb-5Y-Eoh">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="cTb-5Y-Eoh" userLabel="ble">
                                 <rect key="frame" x="20" y="60" width="49" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="31" id="W5p-ha-m24"/>
                                     <constraint firstAttribute="width" constant="47" id="mL8-Kf-uCI"/>
                                 </constraints>
                                 <connections>
-                                    <action selector="Disconnect:" destination="BYZ-38-t0r" eventType="valueChanged" id="Tln-8i-96I"/>
+                                    <action selector="ble:" destination="BYZ-38-t0r" eventType="valueChanged" id="Qpm-yO-KEp"/>
                                 </connections>
                             </switch>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TIp-gQ-KVa">
@@ -80,9 +80,9 @@
                     </view>
                     <navigationItem key="navigationItem" id="mRC-Yb-d5U"/>
                     <connections>
-                        <outlet property="Disconnect" destination="cTb-5Y-Eoh" id="1ft-XO-Pny"/>
-                        <outlet property="Parking" destination="94g-OD-jXn" id="XmW-V6-Oev"/>
-                        <outlet property="Run" destination="r9C-1M-KRi" id="6b2-wG-95Y"/>
+                        <outlet property="ble" destination="cTb-5Y-Eoh" id="Uu8-S5-fpM"/>
+                        <outlet property="parking" destination="94g-OD-jXn" id="mTE-1B-3Rk"/>
+                        <outlet property="run" destination="r9C-1M-KRi" id="Vmf-bK-kId"/>
                         <segue destination="Bsa-ed-QDJ" kind="presentation" identifier="detailsSegue" modalTransitionStyle="coverVertical" id="dOG-7w-qXG"/>
                     </connections>
                 </viewController>
