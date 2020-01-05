@@ -105,7 +105,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         if let val = characteristic.value {
             if characteristic.uuid == charBT05 {
                 DetailsController.input = [UInt8](val)
-                detailsController.prozessArray(array: DetailsController.input)
+                detailsController.prozessInput(array: DetailsController.input)
                 print ("Array size: \(DetailsController.input.count) Array: \(DetailsController.input)")
             }
         }
@@ -133,7 +133,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         
         DetailsController.slotIndex.asObservable()
             .subscribe(onNext: { value in
-                self.makeParkingSlot()
+                self.makeSlots()
             })
             .disposed(by: bag)
         
@@ -170,20 +170,21 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     let start = CGPoint(x: 124, y: 95)
     var heading: Double = 0
     var mes: CGFloat = 400
+    var dia: CGFloat = 180
     
     let parkThis:[UInt8] = [0x00, 0x01]
     let scout:[UInt8] = [0x00, 0x00]
     let pause:[UInt8] = [0x00, 0x03]
     
-    lazy var writeParkThis =  Data(bytes: parkThis)
-    lazy var writeScout =  Data(bytes: scout)
-    lazy var writePause = Data(bytes: pause)
+    lazy var writeParkThis =  Data(_: parkThis)
+    lazy var writeScout =  Data(_: scout)
+    lazy var writePause = Data(_: pause)
     
     @IBAction func ble(_ sender: UISwitch) {
         if sender.isOn {
             let alert = UIAlertController(title: "Connect?", message: "Set bluetooth connection to NXT", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {action in
-                self.connect(toPeripheral: self.myPeripheral!)
+                self.connect(toPeripheral: (self.myPeripheral!))
                 sender.setOn(false, animated: true)}))
             alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: {action in
                 sender.setOn(false, animated: true)}))
@@ -293,31 +294,26 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         view.layer.addSublayer(pathMLayer)
     }
     
-    func makeParkingSlot() {
-        let mas = mes/180
-//        let dmes = mes/16
+    func makeSlots() {
+        let mas = mes/dia
         let frontSlot = CGPoint(x: DetailsController.frontSlot.x * mas + start.x, y: DetailsController.frontSlot.y * mas + start.y)
         let backSlot = CGPoint(x: DetailsController.backSlot.x * mas + start.x, y: DetailsController.backSlot.y * mas + start.y)
         let slotIndex = DetailsController.slotIndex.value
         let width: CGFloat = 50
         let height: CGFloat = 50
 
-        print("x: \(frontSlot.x)")
-        print("y: \(frontSlot.y)")
-
-        
         if slotIndex != 0 {
             slot = UIButton(type: .system)
             slot.tag = slotIndex
             
             if(frontSlot.x < start.x) {
-                slot.frame = CGRect(x: frontSlot.x-width, y: frontSlot.y, width: width, height: backSlot.y-frontSlot.y)
+                slot.frame = CGRect(x: start.x-mes*1.5/6+mes/50, y: frontSlot.y, width: width, height: backSlot.y-frontSlot.y)
                 makeAppearance(slot: slot)
             } else if (frontSlot.y > start.y+mes) {
-                slot.frame = CGRect(x: frontSlot.x, y: frontSlot.y, width: backSlot.x-frontSlot.x, height: height)
+                slot.frame = CGRect(x: frontSlot.x, y: start.y+mes*6.5/6+mes/50, width: backSlot.x-frontSlot.x, height: height)
                 makeAppearance(slot: slot)
             } else if (frontSlot.x > start.x+mes/6 && frontSlot.y < start.y+mes*5/6) {
-                slot.frame = CGRect(x: backSlot.x, y: backSlot.y, width: width, height: frontSlot.y-backSlot.y)
+                slot.frame = CGRect(x: start.x+mes*1.5/6+mes/50, y: backSlot.y, width: width, height: frontSlot.y-backSlot.y)
                 makeAppearance(slot: slot)
             }
         }
@@ -325,18 +321,16 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     
     func makeAppearance(slot: UIButton) {
         slot.layer.cornerRadius = 10
-        slot.backgroundColor = UIColor.darkGray.withAlphaComponent(0.4)
+        slot.backgroundColor = UIColor.darkGray.withAlphaComponent(0.6)
+        slot.setTitleColor(UIColor.black, for: .normal)
+        slot.titleLabel!.font = UIFont.boldSystemFont(ofSize: 30)
         
         if DetailsController.slotStatus == 0 {
             slot.setTitle("P", for: .normal)
-            slot.setTitleColor(UIColor.black, for: .normal)
-            slot.titleLabel!.font = UIFont.boldSystemFont(ofSize: 30)
             slot.addTarget(self, action: #selector(parkNow), for: UIControlEvents.touchUpInside)
         } else {
             slot.setTitle("–", for: .normal)
-            slot.setTitleColor(UIColor.black, for: .normal)
-            slot.titleLabel!.font = UIFont.boldSystemFont(ofSize: 30)
-            slot.addTarget(self, action: #selector(alert), for: UIControlEvents.touchUpInside)
+            slot.addTarget(self, action: #selector(slotAlert), for: UIControlEvents.touchUpInside)
         }
         
         self.view.addSubview(slot)
@@ -344,15 +338,15 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
 
     func animation() {
         
-        let mas = mes/180
+        let mas = mes/dia
         
         let to = CGPoint(x: DetailsController.to.x * mas + start.x, y: DetailsController.to.y * mas + start.y)
         let from = CGPoint(x: DetailsController.from.x * mas + start.x, y: DetailsController.from.y * mas + start.y)
-        let durationMove = DetailsController.step/10
+        let durationMove = DetailsController.step/20
         
         let headingTo = -DetailsController.heading * .pi/180
         let headingFrom = -heading * .pi/180
-        let durationRot = sqrt((headingTo-headingFrom)*(headingTo-headingFrom))/(2 * .pi) * 2
+        let durationRot = sqrt((headingTo-headingFrom)*(headingTo-headingFrom))/(2 * .pi) * 4
 
         if(DetailsController.from != DetailsController.to) {
             
@@ -391,7 +385,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
             let pathAnimation = CABasicAnimation(keyPath: "strokeEnd")
             pathAnimation.fromValue = 0
             pathAnimation.toValue = 1
-            pathAnimation.duration = DetailsController.step/10
+            pathAnimation.duration = durationMove
             pathLayer.add(pathAnimation, forKey: nil)
             
             heading = DetailsController.heading
@@ -400,12 +394,12 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     
     @objc func parkNow(sender: UIButton) {
         if myCharasteristic != nil {
-            writeValue(data: Data(bytes: [0x01, UInt8(sender.tag)]))
+            writeValue(data: Data(_: [0x01, UInt8(sender.tag)]))
         }
         UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform(scaleX: 1.1, y: 1.15)}, completion: {finish in UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform.identity})})
     }
     
-    @objc func alert(sender: UIButton) {
+    @objc func slotAlert(sender: UIButton) {
         let alert = UIAlertController(title: "", message: "This parking slot is to small", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
