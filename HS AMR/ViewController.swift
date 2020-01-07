@@ -172,6 +172,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     var mes: CGFloat = 400
     var dia: CGFloat = 180
     
+    var slotBackgroundColor = UIColor.darkGray.withAlphaComponent(0.6)
+    
     let parkThis:[UInt8] = [0x00, 0x01]
     let scout:[UInt8] = [0x00, 0x00]
     let pause:[UInt8] = [0x00, 0x03]
@@ -285,7 +287,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         view.layer.addSublayer(pathLayer)
         
         pathM.move(to: CGPoint(x: start.x, y: start.y))
-
+        
         pathMLayer.fillColor = UIColor.clear.cgColor
         pathMLayer.strokeColor = UIColor.black.cgColor
         pathMLayer.lineCap = .round
@@ -321,7 +323,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     
     func makeAppearance(slot: UIButton) {
         slot.layer.cornerRadius = 10
-        slot.backgroundColor = UIColor.darkGray.withAlphaComponent(0.6)
+        slot.backgroundColor = slotBackgroundColor
         slot.setTitleColor(UIColor.black, for: .normal)
         slot.titleLabel!.font = UIFont.boldSystemFont(ofSize: 30)
         
@@ -372,8 +374,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
             group.fillMode = .forwards
             group.isRemovedOnCompletion = false
             robotLayer.add(group, forKey: nil)
-            
+                        
             let path = UIBezierPath()
+
             path.move(to: from)
             path.addLine(to: to)
             
@@ -392,6 +395,47 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         }
     }
     
+    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        let alert = UIAlertController(title: "Reset the view?", message: "All graphical objects will be reset to default position", preferredStyle: .alert)
+                   alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {action in
+                    self.resetValues()
+                    self.resetObjects()
+                   }))
+                   alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: {action in
+                       }))
+        
+                   self.present(alert, animated: true)
+    }
+    
+    func resetValues() {
+        DetailsController.statusIndex.accept(2)
+        DetailsController.slotIndex.accept(0)
+        DetailsController.distance.accept(0)
+        
+        DetailsController.slotStatus = 0
+        DetailsController.step = 0
+        DetailsController.distanceSum = 0
+        DetailsController.heading = 0
+        DetailsController.from = CGPoint(x: 0,y: 0)
+        DetailsController.to = CGPoint(x: 0,y: 0)
+        DetailsController.frontSlot = CGPoint(x: 0,y: 0)
+        DetailsController.backSlot = CGPoint(x: 0,y: 0)
+    }
+
+    func resetObjects() {
+        robotLayer.removeAllAnimations()
+        pathLayer.path = nil
+        pathMLayer.path = nil
+        pathM.removeAllPoints()
+        pathM.move(to: start)
+
+        for subview in view.subviews {
+            if subview.backgroundColor == slotBackgroundColor {
+                subview.removeFromSuperview()
+            }
+        }
+    }
+
     @objc func parkNow(sender: UIButton) {
         if myCharasteristic != nil {
             writeValue(data: Data(_: [0x01, UInt8(sender.tag)]))
