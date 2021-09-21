@@ -301,8 +301,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         let frontSlot = CGPoint(x: DetailsController.frontSlot.x * mas + start.x, y: DetailsController.frontSlot.y * mas + start.y)
         let backSlot = CGPoint(x: DetailsController.backSlot.x * mas + start.x, y: DetailsController.backSlot.y * mas + start.y)
         let slotIndex = DetailsController.slotIndex.value
-        let width: CGFloat = 50
-        let height: CGFloat = 50
+        let width: CGFloat = mes/8
+        let height: CGFloat = mes/8
 
         if slotIndex != 0 {
             slot = UIButton(type: .system)
