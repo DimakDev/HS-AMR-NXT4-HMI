@@ -22,15 +22,14 @@
     + [Zurückgelegte Strecke (2)](#zur-ckgelegte-strecke--2-)
     + [Status (3)](#status--3-)
     + [Schließen Button (4)](#schlie-en-button--4-)
-  * [Shake it](#shake-it)
+  * [Shake It](#shake-it)
 - [Verbesserungsmöglichkeiten](#verbesserungsm-glichkeiten)
 
 ---
 
 # Vorwort
 
-Das Human-Mashine-Interface (weiter HMI) wurde für das iOS entwickelt und aus diesem Grund kann der Quellcode der App, der fürs Android geschrieben ist, nicht benutzt werden. In der Kommunikation müssen auch Änderungen vorgenommen werden, die weiter im Abschnitt [Kommunikationsschema](#kommunikationsschema) besser beschrieben sind.
-Diese Dokumentation dient als kurze Beschreibung der Implementierung der HMI-Aufgaben. Um den Inhalt der Dokumentation möglichst kurz halten zu können, wird hier detailliert den Programmierungsteil der App, des Arduino UNO und NXT nicht betrachtet.
+Das Human-Maschine-Interface (weiter HMI) wurde für das iOS entwickelt und aus diesem Grund kann der Quellcode der App, der fürs Android geschrieben ist, nicht benutzt werden. In der Kommunikation müssen auch Änderungen vorgenommen werden, die weiter im Abschnitt [Kommunikationsschema](#kommunikationsschema) beschrieben sind. Diese Dokumentation dient als kurze Beschreibung der Implementierung der HMI Aufgaben. Um den Inhalt der Dokumentation möglichst kurz halten zu können, wird hier auf des Arduino UNO und NXT Teile verzichtet.
 
 ---
 
@@ -39,41 +38,31 @@ BLE – Bluetooth Low Energy. UI – User Interface
 
 # Analyse der Aufgabenstellung
 
-## HMI Aufgaben
+## HMI Aufgabenstellung
 
-Die Aufgaben des Moduls beinhalten die Aufgaben zur Steuerung  des Roboters and Darstellung der vom Roboter ausgegangenen Signalen.
-Als erstes sollten die Steuerungsbefehle implementiert werden. Die Befehle sind in den Unterlagen des Seminars als ***SCOUT/PAUSE***, ***PARK_NOW*** deklariert.
-Das weitere Schritt ist die Darstellung des statischen Parkours mit beweglichem Fahrzeug, gefahrenem Pfad und entdeckten Parklücken auf ihm.
-Die wichtigen Daten von Sensoren sollten zur Darstellung von Abstandsvisualisierung und Fahrzeugstatus dienen.
-Damit der User, indem er per Touch eine Parklücke ausfindet, dem Roboter aufs Parken hinweisen kann, ist die Touch-Geste-Funktion zu realisieren.
+Die Aufgaben des Moduls beinhalten die Aufgaben zur Steuerung  des Roboters und Darstellung der vom Roboter ausgegangenen Signalen. Als Erstes sollten die Steuerungsbefehle implementiert werden. Die Befehle sind in den Unterlagen des Seminars als ***SCOUT/PAUSE***, ***PARK_NOW*** definiert. Der weitere Schritt ist die Darstellung des Fahrzeuges auf einer Karte zusammen mit den Parklücken. Die wichtigen Daten von Sensoren sollten zur Darstellung von Abstandsvisualisierung und Fahrzeugstatus dienen. Damit der Benutzer, indem er per Touch eine Parklücke auswählt, dem Fahrzeug aufs Parken hinweisen kann, ist die Touch-Geste-Funktion zu realisieren.
 
 ## Geplantes Vorgehen
 
-Bevor mit dem Programmieren anzufangen, ist ein UI Prototyp zu entwickeln. Anhang des Prototyps plant man die Darstellung der UI Elemente und ihre Funktionen.
-Als nächstes beginnt man im Xcode mit dem Erstellen des nötigen Projektes und der Layouts. Dann platziert man UI Objekte auf den Layouts und programmiert man die im Controller.
-Weiter implementiert man BLE Funktionalität, realisiert RS485 Kommunikation des Arduino UNO und NXT, damit das BLE Modul die Daten bekommen und übergeben kann.
-Sobald die Daten in richtiger Form zur App ankommen können, implementiert man die HMI aufgaben zum Parken des Roboters, Zeichnen des Parkours und zur Darstellung der Daten von Sensoren.
+Bevor mit dem Programmieren anzufangen, ist ein UI Prototyp zu entwickeln. Anhang des Prototyps wird die Darstellung der UI Elemente und ihre Funktionen geplant. Als Nächstes beginnt man im Xcode mit dem Erstellen des Layouts. Dann platziert man UI Objekte auf dem Layout und programmiert man die im Xcode. Weiter implementiert man BLE Funktionalität, realisiert RS485 Kommunikation des Arduino UNO und NXT, damit das BLE Modul die Daten bekommen und übergeben kann. Sobald die Daten in richtiger Form zur App ankommen können, implementiert man die HMI Aufgaben zum Parken des Fahrzeuges, Zeichnen der Karte und Parklücken.
 
 ## Schnittstellen mit anderen Modulen
 
-Für die Kommunikation mit den anderen Modulen stehen zwei Klassen auf dem NXT zur Verfügung. 
-Die Klasse *HmiReaderThread* und zwar die Funktion *processInputs()* liest die Befehle vom User ab und übergibt die Parameter an die zuständigen Variablen, die sich weiter von den anderen Modulen ablesen lassen.
-Die Klasse *HmiSenderThread* und zwar die Funktion *processOutputs()* sendet die Daten von Sensoren an die Fernbedienung.
+Für die Kommunikation mit den anderen Modulen stehen zwei Klassen auf dem NXT zur Verfügung. Die Klasse *HmiReaderThread* und zwar die Funktion *processInputs()* liest die Befehle vom Benutzer ab und übergibt die Parameter an die zuständigen Variablen, die sich weiter von den anderen Modulen ablesen lassen. Die Klasse *HmiSenderThread* und zwar die Funktion *processOutputs()* sendet die Daten von Sensoren an die Fernbedienung.
 
 # HMI Entwurf
 
 ## UI Funktionen
 
-Im folgenden Bild ist eine vereinfachte schematische Funktionalität des UI Konzepts dargestellt.
-Der Ausgang und Eingang werden abstrakt jeweils in einem Datenfluss zusammengefasst.
-Aus dem Bild kann man entnehmen, was die Funktionalität des UI ist und was von ihm zu erwarten ist.
+Im folgenden Bild ist eine vereinfachte schematische Funktionalität des UI Konzepts dargestellt. Der Ausgang und Eingang werden abstrakt jeweils in einem Datenfluss zusammengefasst. Aus dem Bild kann man entnehmen, was die Funktionalität des UI ist und was von ihm zu erwarten ist.
 
 ![](Images/UI.png)
 
 ## Kommunikationsschema
 
-Die Bluetooth Verbindung zwischen dem NXT und einem iOS Device kann nicht festgestellt werden. Möglicher Grund liegt daran, dass der NXT nicht zertifiziert fürs Benutzen mit iOS Devices ist. Deshalb ist für die Implementierung der Kommunikation ein BLE Modul auf dem Arduino UNO aufzubauen.
-Das Kommunikationsschema sieht dann wie folgt aus.
+Die Bluetooth-Verbindung zwischen dem NXT und dem iOS-Gerät kann nicht festgestellt werden. Möglicher Grund liegt daran, dass der NXT nicht zertifiziert fürs Benutzen mit iOS Geräten ist. Deshalb ist für die Implementierung der Kommunikation ein BLE Modul auf dem Arduino UNO aufzubauen. Das 
+
+Kommunikationsschema sieht dann wie folgt aus.
 
 ![](Images/BLEModul.png)
 
@@ -83,8 +72,8 @@ Nach dem folgenden Schema ist das BLE Modul zum Arduino UNO angeschlossen.
 
 ## UI Prototyp
 
-Bei der Entwicklung des UI Prototyps dienen als Inspiration die UIs der mobilen Spielen wie PUBG und Apex Legends. Anhand dieser Beispiele kann man besser nachvollziehen, wohin die Haupt- und Nebenelemente besser zu platzieren sind und wie die Information auf dem Bildschirm verteilt werden muss, um den User beim Spielen nicht zu stören.
-Für das Prototyp wurde ein Workspace in Adobe XD erstellt, wo UI Elemente platziert und getestet werden können. Im Prototype-Mode des Programms könnte man alle Transaktionen zwischen den Layouts testen und es gibt eine Möglichkeit das Prototyp aufs Handy zu laden und gleich's auf dem Handy zu testen.
+Bei der Entwicklung des UI Prototyps dienen als Inspiration die UI der mobilen Spiele wie PUBG und Apex Legends. Anhand dieser Beispiele kann man besser nachvollziehen, wohin die Haupt- und Nebenelemente besser zu platzieren sind und wie die Information auf dem Bildschirm verteilt werden muss, um den User beim Spielen nicht zu stören. Für den Prototyp wurde ein Workspace in Adobe XD erstellt, wo UI Elemente platziert und getestet werden können. Im Prototyp-Mode des Programms könnte man alle Transaktionen zwischen den Layouts testen und es gibt eine Möglichkeit, dass der Prototyp aufs Handy zu laden und gleich's auf dem Handy zu testen ist.
+
 Workspace des Projektes im Adobe XD.
 
 ![](Images/AdobeXD.png)
@@ -95,7 +84,7 @@ Workspace des Projektes im Adobe XD.
 
 ![](Images/HMI.png)
 
-Hier sind alle Elemente des UI beschriftet und im folgenden wird deren Implementierung beschrieben.
+Hier sind alle Elemente des UI beschriftet und im Folgenden wird deren Implementierung beschrieben.
 
 ## MAIN VIEW
 
@@ -122,8 +111,7 @@ Hier sind alle Elemente des UI beschriftet und im folgenden wird deren Implement
 		self.present(alert, animated: true)
 	}
 		
-Das UI Element Switch steht für die BLE Verbindung. Falls der User den Switch aktivieren möchte, bekommt er eine Meldung mit der Frage ob er die Verbindung feststellen möchte.
-Beim aktiven Zustand kann die BLE Verbindung deaktiviert werden, indem man den Switch in den deaktivierten Zustand überführt.
+Das UI Element Switch steht für die BLE Verbindung. Falls der User den Switch aktivieren möchte, bekommt er eine Meldung mit der Frage, ob er die Verbindung feststellen möchte. Beim aktiven Zustand kann die BLE Verbindung deaktiviert werden, indem man den Switch in den deaktivierten Zustand überführt.
  
 ![](Images/1Switch.png)
 
@@ -133,8 +121,7 @@ Beim aktiven Zustand kann die BLE Verbindung deaktiviert werden, indem man den S
 
 ![](Images/23BahnParkflächen.png)
 
-Das Parkour und alle statische Elemente des UI wurden proportional zu den realen Abmessungen des Parkours gezeichnet.
-Hier entspricht *mes* dem am größten Stück der Bahn, was 7 Rechtecke lang voraussetzt. Weiter werden die nötigen Punkte anhand *start* und *mes* maßstäblich ermittelt und die nötigen UI Elemente auf der Basis der Punkte erstellt.
+Die Karte und alle statische Elemente des UI wurden proportional zu den realen Abmessungen der Karte gezeichnet. Hier entspricht *mes* dem am größten Stück der Bahn, was 7 Rechtecke lang voraussetzt. Weiter werden die nötigen Punkte anhand *start* und *mes* maßstäblich ermittelt und die nötigen UI Elemente auf der Basis der Punkte erstellt.
 
 	Funktion: createObjects()
 	*****Darstellung der Bahn und Parkfläche
@@ -185,8 +172,8 @@ Hier entspricht *mes* dem am größten Stück der Bahn, was 7 Rechtecke lang vor
 	view.layer.addSublayer(lineLayer)
 
 ### Parklücken (4)
-Als erstes müssen die Koordinaten der Parklücken in den *pt*-Bereich transformiert werden. Dafür steht das Koeffizient *mas = mes/180* zur Hilfe.
-Weiter sind alle Koordinaten mit *mas* zu multiplizieren und vom  *start* abgeleitet, weil *start* der Startposition des Roboters auf dem Parkour entspricht.
+
+Als Erstes müssen die Koordinaten der Parklücken in den *pt*-Bereich transformiert werden. Dafür steht das Koeffizient *mas = mes/180* zur Hilfe. Weiter sind alle Koordinaten mit *mas* zu multiplizieren und vom  *start* abgeleitet, weil *start* der Startposition des Roboters auf dem Parkour entspricht.
 
 	Funktion: makeSlots()
 		
@@ -213,7 +200,8 @@ Weiter sind alle Koordinaten mit *mas* zu multiplizieren und vom  *start* abgele
 	}
     
 Die obere Funktion bekommt die Koordinaten einer Parklücke und erstellt ein UI Element für die.
-Und die untere Funktionen gestaltet das UI Element.
+
+Und die unteren Funktionen gestaltet das UI Element.
 
 	Funktion: makeAppearance(slot: UIButton)
 	
@@ -233,7 +221,8 @@ Und die untere Funktionen gestaltet das UI Element.
 	self.view.addSubview(slot)
 
 In *\#selector(...)* wird eine bestimmte Aktion aufgerufen. Je nachdem, ob die Parklücke *suitable* oder *not_suitable* fürs Parken ist.
-Im folgenden sind die Funktionen der Aktionen in *\#selector(...)*.
+
+Im Folgenden sind die Funktionen der Aktionen in *\#selector(...)*.
 
 	Funktion: parkNow(sender: UIButton) 
  
@@ -242,8 +231,7 @@ Im folgenden sind die Funktionen der Aktionen in *\#selector(...)*.
 	}
 	UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform(scaleX: 1.1, y: 1.15)}, completion: {finish in UIButton.animate(withDuration: 0.1, animations: {sender.transform = CGAffineTransform.identity})})
 
-In *parkNow(sender: UIButton)* senden wir ein Byte-Array *writeValue(data: Data(bytes: [0x01, UInt8(sender.tag)])*. In diesem Array ist der erste Parameter immer ein Flag zur Erkennung der Art des Befehles. Die Art des Befehles entspricht der *Enum*-Liste *HmiPLT.Command*.
-In diesem Fall entspricht *0x01* *HmiPLT.Command.IN_SELECTED_PARKING_SLOT*. Der zweite Parameter ist *slotID* was unter dem Tag des Buttons gespeichert ist.
+In *parkNow(sender: UIButton)* senden wir ein Byte-Array *writeValue(data: Data(bytes: [0x01, UInt8(sender.tag)])*. In diesem Array ist der erste Parameter immer ein Flag zur Erkennung der Art des Befehles. Die Art der Befehle entspricht der *Enum*-Liste *HmiPLT.Command*. In diesem Fall entspricht *0x01* *HmiPLT.Command.IN_SELECTED_PARKING_SLOT*. Der zweite Parameter ist *slotID*, was unter dem Tag des Buttons gespeichert ist.
 
 	Funktion: slotAlert(sender: UIButton)
 	
@@ -255,10 +243,9 @@ Hier bekommen wir eine Warnung, dass die Parklücke *not_suitable* fürs Parken 
 
 ### ***PARK_NOW*** (5) und ***SCOUT/PAUSE*** (6) Buttons
 
-Die zwei Buttons sind erstmal im vertikalen Stack zusammengesetzt und dann sind die Stacks Constrains zum Screen View angesetzt.
-Das erlaubt, das Stack als ein Objekt zu manipulieren.
+Die zwei Buttons sind erst mal im vertikalen Stack zusammengesetzt und dann sind die Stacks Constrains zum Screen View angesetzt. Das erlaubt, das Stack als ein Objekt zu manipulieren.
 
-Im folgenden sind die Funktionen der Buttons.
+Im Folgenden sind die Funktionen der Buttons.
 
 	Funktion: @IBAction parking(_ sender: UIButton)
 
@@ -288,7 +275,7 @@ Hier schickt man Befehle ***SCOUT/PAUSE*** *INxtHmi.mode.SCOUT* bzw. *INxtHmi.mo
 
 ### Animation des Pfades (7) und Roboters (99)
 
-Als Startpunkt der Animation ist *RXSwift*, was eine reaktive Programmierungsbibliothek ist. Das erlaubt, die Animation als eine Reaktion auf eine Änderung einer Variable auszulösen. Auf die Syntax der *RXSwift* wird genauer im Abschnitt [DETAILS VIEW](#details_view) eingegangen.
+Als Startpunkt der Animation ist *RXSwift*, was eine externe Bibliothek ist. Das erlaubt, die Animation als eine Reaktion auf eine Änderung einer Variable auszulösen. Auf die Syntax der *RXSwift* wird genauer im Abschnitt [DETAILS VIEW](#details_view) eingegangen.
 
 Hier werden UI Elemente für die Animation erstellt
 	
@@ -379,20 +366,21 @@ und in der folgenden Funktion animiert.
 	}
 	    
 Zuerst ordnet man die Anfangs- und Endpunkte im *pt*-Bereich zu und definiert die Funktionen fürs Dauern der Bewegung und der Rotation des Roboters, was in beiden Fällen Strecke über Geschwindigkeit ist.
-Danach werden die Animations erstellt und den passenden Sublayers zugeordnet. *Group* Animation besteht aus 2 nacheinander folgenden Animations, die erlaubt, zuerst die Bewegung und danach die Rotation des Roboters schrittweise durchzuführen.
+Danach werden die Animationen erstellt und den passenden Sublayers zugeordnet. *Group* Animation besteht aus 2 nacheinander folgenden Animationen, die erlaubt, zuerst die Bewegung und danach die Rotation des Roboters schrittweise durchzuführen.
 
 ---
 
 ### DETAILS VIEW Button (8)
+
 Funktion: Öffnen des DETAILS VIEW
+
 Der Segue wurde im grafischen Interface des Xcode erstellt.
 
 ![](Images/8DetailsButton.png)
 
 ## DETAILS VIEW
 
-Die BLE Eingangsbuffers werden als erstes in *prozessInput(array: [UInt8])* bearbeitet und aufgeteilt.
-Die Variablen zur Darstellung des Status, der gefahrenen Strecke und entdeckten Parklücken werden in der *RXSwift* als Observable deklariert und führen einen Kode aus, wenn die aktualisiert werden.
+Die BLE Eingangspuffers werden als Erstes in *prozessInput(array: [UInt8])* bearbeitet und aufgeteilt. Die Variablen zur Darstellung des Status, der gefahrenen Strecke und entdeckten Parklücken werden in der *RXSwift* als Observable deklariert und führen einen Code aus, wenn die aktualisiert werden.
 
 	Funktion: prozessInput(array: [UInt8])
 	
@@ -485,9 +473,9 @@ Unterordnung der Farben:
 
 ### Schließen Button (4)
 
-Function: Schließen des DETAILS VIEW und Rückführung aufs MAIN VIEW
-Bei diesem Button ist es wichtig die Prozesse im MAIN VIEW bei der Öffnung und Rückkehr nicht zu unterbrechen.
-Dafür ist eine Funktion *unwindToGlobal(segue: UIStoryboardSegue)* zu deklarieren und einen Segue aufs Exit zu setzten.
+Funktion: Schließen des DETAILS VIEW und Rückführung aufs MAIN VIEW
+Bei diesem Button ist es wichtig, die Prozesse im MAIN VIEW bei der Öffnung und Rückkehr nicht zu unterbrechen.
+Dafür ist eine Funktion *unwindToGlobal(segue: UIStoryboardSegue)* zu deklarieren und einen Segue aufs Exit zu setzen.
 
 ```
 @IBAction func unwindToGlobal(segue: UIStoryboardSegue) {}
@@ -495,11 +483,11 @@ Dafür ist eine Funktion *unwindToGlobal(segue: UIStoryboardSegue)* zu deklarier
 
 ![](Images/4UnwindToGlobal.png)
 
-## Shake it
+## Shake It
 
-Function: Zurücksetzung aller dynamischen UI Objekte auf ihre Startpositionen
+Funktion: Zurücksetzung aller dynamischen UI Objekte auf ihre Startpositionen
 
-Schütteln um die Animation zu löschen.
+Schütteln, um die Animation zu löschen.
 
 ![](Images/Shake.png)
 
